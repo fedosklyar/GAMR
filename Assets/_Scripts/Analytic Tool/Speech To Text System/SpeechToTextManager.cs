@@ -5,6 +5,7 @@ using UnityEngine.Windows.Speech;
 using System.Linq;
 using UnityEngine.UI;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.Windows.Utilities;
 
 public class SpeechToTextManager : MonoBehaviour
 {
@@ -26,11 +27,19 @@ public class SpeechToTextManager : MonoBehaviour
     void Awake()
     {
         // comment.text = "Press start and say something to add a note...";
-        dictationRecognizer = new DictationRecognizer();
+        // The confidence level is Medium be dafault
+        // Specified the Low level to increase probability of speech recognition (if the confidence level term understood correctly) 
+        dictationRecognizer = new DictationRecognizer(ConfidenceLevel.Low);
 
         dictationRecognizer.DictationHypothesis += DictationRecognizer_DictationHypothesis;
         dictationRecognizer.DictationResult += DictationRecognizer_DictationResult;
         dictationRecognizer.DictationComplete += DictationRecognizer_DictationComplete;
+
+        //Introduce the handler of an error
+        dictationRecognizer.DictationError += (error, hresult) =>
+        {
+            Debug.LogErrorFormat("Dictation error: {0}; HResult = {1}.", error, hresult);
+        };
 
         commentUI.SetActive(false);
         startbtn.SetActive(true);
@@ -39,12 +48,15 @@ public class SpeechToTextManager : MonoBehaviour
 
     private void DictationRecognizer_DictationHypothesis(string text)
     {
+        Debug.Log("Text within dictation hypothesis --> " + text); 
         // this.comment.text = this.comment.text + text;
     }
 
     private void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
-        if(this.comment.text == "Press start and say something to add a note...")
+        Debug.Log("The DictationResult event is triggered");
+        Debug.Log("The text within the event is" + text);
+        if (this.comment.text == "Press start and say something to add a note...")
         {
             comment.text = "";
         }
@@ -53,6 +65,7 @@ public class SpeechToTextManager : MonoBehaviour
 
     private void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
+        Debug.Log("The DictationRecognizer is completed");
         dictationRecognizer.Stop();
     }
 
@@ -67,8 +80,11 @@ public class SpeechToTextManager : MonoBehaviour
 
     public void StartSpeechToText()
     {
-        if(!isRecording)
+        Debug.Log("Speech to text entered");
+        Debug.Log("Value of isRecording is " + isRecording);
+        if (!isRecording)
         {
+            Debug.Log("Log within the if of StartSpeecToText");
             // Display start recording message
             startmessage.FadeOut();
 
@@ -80,6 +96,7 @@ public class SpeechToTextManager : MonoBehaviour
 
             // RecordIndicator.recordindicator.StartBlink();
             dictationRecognizer.Start();
+            Debug.Log("Speech to text started (respective method of the class)");
         }
 
         isRecording = true;
@@ -87,7 +104,8 @@ public class SpeechToTextManager : MonoBehaviour
 
     public void StopSpeechToText()
     {
-        if(isRecording)
+        Debug.Log("StopSpeechToTextIsEntered");
+        if (isRecording)
         {
             // Display stop recording message
             stopmessage.FadeOut();
@@ -100,6 +118,7 @@ public class SpeechToTextManager : MonoBehaviour
 
             notePos = Camera.main.transform.position;
             GameObject note = Instantiate(noteBtn, new Vector3(notePos.x, 0.05f, notePos.z), Quaternion.identity);
+            Debug.Log("The text within comment is --> " + this.comment.text);
             note.GetComponentInChildren<Note>().note = this.comment.text;
 
             commentUI.SetActive(false);
