@@ -52,5 +52,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "GAMR.sln"
+    "dotnet.defaultSolution": "GAMR.sln",
+    "dotnet.preferCSharpExtension": true
 }
