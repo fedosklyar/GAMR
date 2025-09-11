@@ -6382,6 +6382,7 @@ MonoBehaviour:
   recordAtAwake: 0
   prefabsToLoad: []
   objectsToRecord: []
+  includeSpatialData: 0
   PlayerTrackerParent: {fileID: 0}
   PlayerPrefab: {fileID: 1815827064593784011, guid: 009934699b0047e4e8637a94b35d1ce1, type: 3}
   CameraTrackerParent: {fileID: 0}
@@ -6414,11 +6415,9 @@ MonoBehaviour:
   enableHandTracker: 0
   enableReplay: 0
   CurrentIndex: 0
-  HandTrackerParent: {fileID: 0}
   leftHandPrefab: {fileID: 3369754656502238752, guid: 6196c45d660973e44961c5971a86cec3, type: 3}
   rightHandPrefab: {fileID: 6929055768540292842, guid: 449622d64af6c9f4aadbde767d210aa2, type: 3}
   recordHandGestures: 0
-  handMeshMaterial: {fileID: 2100000, guid: 45082b98567b3d44ca3bdbe39f46041a, type: 2}
 --- !u!114 &578930651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7002,7 +7001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 5
+  levelIndex: 6
 --- !u!65 &660736898
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14749,7 +14748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 4
+  levelIndex: 5
 --- !u!65 &1220900611
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18283,7 +18282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 1
+  levelIndex: 2
 --- !u!1 &1543363649
 GameObject:
   m_ObjectHideFlags: 0
@@ -23183,7 +23182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 6
+  levelIndex: 7
 --- !u!65 &1748698021
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24248,7 +24247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 2
+  levelIndex: 3
 --- !u!65 &1876606616
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28857,7 +28856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa3091244926d34499a222489257a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 3
+  levelIndex: 4
 --- !u!65 &2133216021
 BoxCollider:
   m_ObjectHideFlags: 0

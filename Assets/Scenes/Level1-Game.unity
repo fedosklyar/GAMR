@@ -436,8 +436,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33336080}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.431, y: 0.41727984, z: 0}
-  m_LocalScale: {x: 2.494486, y: 2.8794127, z: 50.972004}
+  m_LocalPosition: {x: 0.443, y: 0.41727984, z: 0}
+  m_LocalScale: {x: 1.6952586, y: 2.8794127, z: 50.972004}
   m_Children:
   - {fileID: 287934237}
   - {fileID: 411522863}
@@ -2295,7 +2295,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &98703325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6752,7 +6752,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &409558903
 Transform:
   m_ObjectHideFlags: 0
@@ -6761,8 +6761,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409558902}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3833565, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: -0.3329999, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 1068563370}
   - {fileID: 1552623707}
@@ -7207,6 +7207,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 8300000, guid: 291bf9326e517b0489c2ee53d0a6a63f, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 578930649}
+        m_TargetAssemblyTypeName: ReplaySystem, Assembly-CSharp
+        m_MethodName: Record
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -9889,8 +9901,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571309440}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.11919, y: -0.035105016, z: 1.0005}
-  m_LocalScale: {x: 0.19361871, y: 0.15932001, z: 0.01}
+  m_LocalPosition: {x: 0.1648, y: -0.035105016, z: 1.0005}
+  m_LocalScale: {x: 0.2849, y: 0.15932001, z: 0.01}
   m_Children:
   - {fileID: 2017856688}
   - {fileID: 409558903}
@@ -9988,6 +10000,7 @@ MonoBehaviour:
     gameobj: {fileID: 1592184563}
   - prefabName: egyptian_B
     gameobj: {fileID: 919132149367683485}
+  includeSpatialData: 1
   PlayerTrackerParent: {fileID: 1672152329}
   PlayerPrefab: {fileID: 1815827064593784011, guid: 009934699b0047e4e8637a94b35d1ce1, type: 3}
   CameraTrackerParent: {fileID: 674673856}
@@ -10020,11 +10033,9 @@ MonoBehaviour:
   enableHandTracker: 0
   enableReplay: 0
   CurrentIndex: 0
-  HandTrackerParent: {fileID: 372479254}
   leftHandPrefab: {fileID: 3369754656502238752, guid: 6196c45d660973e44961c5971a86cec3, type: 3}
   rightHandPrefab: {fileID: 6929055768540292842, guid: 449622d64af6c9f4aadbde767d210aa2, type: 3}
   recordHandGestures: 0
-  handMeshMaterial: {fileID: 2100000, guid: 45082b98567b3d44ca3bdbe39f46041a, type: 2}
 --- !u!114 &578930651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11608,8 +11619,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 689053223}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.19207126, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: -0.072, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 1948409065}
   - {fileID: 281804722}
@@ -14536,8 +14547,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818638570}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0007865452, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: 0.057997573, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 928261841}
   - {fileID: 1191230290}
@@ -16160,6 +16171,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 7c86d8e3-e698-47a5-a829-8753d145e020
     m_ActionName: Game/Heatmap[/Keyboard/h]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fb2e9053-3521-4881-ba0d-8a91150ec0d0
+    m_ActionName: Game/Timer[/Keyboard/t]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 78ab909a-8d3b-46ca-98b2-d8b613c89806
+    m_ActionName: Game/Menu
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4a0d8c15-41d9-4a0c-84f3-b6c79abff53c
+    m_ActionName: Game/Rewind[/Keyboard/j]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2a4025d6-6129-4675-8aaa-9256228d99a2
+    m_ActionName: Game/FastForward[/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Game
@@ -24790,8 +24817,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1453534461}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.19049852, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: 0.18799546, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 1919678717}
   - {fileID: 2095892319}
@@ -25370,8 +25397,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1465749336}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.15960819, y: -0.18699986, z: -0.09999275}
-  m_LocalScale: {x: 5.304945, y: 6.3526483, z: 4.457373}
+  m_LocalPosition: {x: -0.216, y: -0.18699986, z: -0.09999275}
+  m_LocalScale: {x: 3.6052537, y: 6.3526487, z: 4.457373}
   m_Children:
   - {fileID: 842539087}
   - {fileID: 1565188472}
@@ -27863,7 +27890,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1602194454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36170,8 +36197,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017856687}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3833565, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: -0.20199789, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 885280255}
   - {fileID: 788656484}
@@ -38145,8 +38172,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2111798821}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.38178384, y: 0.13099982, z: 0}
-  m_LocalScale: {x: 4.893836, y: 5.6490097, z: 100}
+  m_LocalPosition: {x: 0.31799322, y: 0.13099982, z: 0}
+  m_LocalScale: {x: 3.3258626, y: 5.6490097, z: 100}
   m_Children:
   - {fileID: 1523949505}
   - {fileID: 524712620}
@@ -38598,7 +38625,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 578930649}
         m_TargetAssemblyTypeName: ReplaySystem, Assembly-CSharp
-        m_MethodName: StopReplay
+        m_MethodName: StopRecording
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

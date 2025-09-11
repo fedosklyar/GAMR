@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Text.RegularExpressions;
 
 
 public class ReplaySystem : MonoBehaviour
@@ -25,6 +26,8 @@ public class ReplaySystem : MonoBehaviour
     public List<GameObject> prefabsToLoad;
     public List<Objects> objectsToRecord;
     List<ObjectsPositions> objspositions = new List<ObjectsPositions>();
+
+    public bool includeSpatialData;
 
     List<Position> positions = new List<Position>();
 
@@ -88,7 +91,10 @@ public class ReplaySystem : MonoBehaviour
         // analyticCtrl.Analytic.Replay.performed += cntxt => this.gameObject.GetComponent<HandRecorder>().LoadHandData();
         // analyticCtrl.Analytic.Save.performed += cntxt => this.gameObject.GetComponent<HandRecorder>().SaveHandData();
 
-        if(rs == null)
+        //Temporal Debug. Delete later
+        Debug.Log("Awake on ReplaySystem is called");
+        DataLogger.Instance.LogString("Awake on ReplaySystem is called");
+        if (rs == null)
         {
             rs = this;
         }
@@ -112,10 +118,12 @@ public class ReplaySystem : MonoBehaviour
         {
             dataPath = Application.persistentDataPath +"/ReplayData/" + SceneManager.GetActiveScene().name;
         }
+        //Temporal Debug. Delete later
+        Debug.Log("The data path in Awake is " + dataPath);
 
-        if(objectsToRecord.Count != 0)
+        if (objectsToRecord.Count != 0)
         {
-            for(int i = 0; i < objectsToRecord.Count; i++)
+            for (int i = 0; i < objectsToRecord.Count; i++)
             {
                 ObjectsPositions objspos = new ObjectsPositions();
                 objspositions.Add(objspos);
@@ -125,6 +133,7 @@ public class ReplaySystem : MonoBehaviour
 
     void Start()
     {
+        DataLogger.Instance.LogString("Start on ReplaySystem is called");
         lr = GetComponent<LineRendererComponent>();
 
         // Check if ReplayData folder exists
@@ -275,6 +284,8 @@ public class ReplaySystem : MonoBehaviour
     }
 
     public void LoadButton(){
+        //Temporal Debug. Delete later
+        Debug.Log("LoadButton method called");
         loadLineAtOnce = loadLineAtOnceBtn.GetComponent<CheckBox>().checkboxed;
 
         loadData();
@@ -285,12 +296,14 @@ public class ReplaySystem : MonoBehaviour
     }
 
     public void Record(){
+        DataLogger.Instance.LogString("Record method is called");
         isRecord = true;
         timer = 0.0f;
         RecordIndicator.recordindicator.StartBlink();
     }
 
     public void StopRecording(){
+        DataLogger.Instance.LogString("StopRecording on ReplaySystem is called");
         isRecord = false;
         RecordIndicator.recordindicator.StopBlink();
         saveData();
@@ -298,6 +311,8 @@ public class ReplaySystem : MonoBehaviour
     }
 
     public void Replay(){
+        //Temporal Debug. Delete later
+        Debug.Log("Replay method called");
         isRecord = false;
         isRewind = false;
 
@@ -380,6 +395,8 @@ public class ReplaySystem : MonoBehaviour
             Directory.CreateDirectory(dataPath);
         }
 
+        DataLogger.Instance.LogString("The SaveData is called");
+
         // Get current time and place into logfile's name
         string time = GetCurrentDateTime();
         // Creating logfile
@@ -424,8 +441,14 @@ public class ReplaySystem : MonoBehaviour
             }
         }
 
+        // The recording of the SpatialData
+        if (this.includeSpatialData)
+        {
+            SpatialMeshManager.Instance.SaveMeshesInFile(dataPath, time);
+        }
+
         // Adding new log file path to log files
-        LogFileManager.logManager.AddLogFile(path);
+            LogFileManager.logManager.AddLogFile(path);
 
         writer.Close();
 
@@ -439,6 +462,9 @@ public class ReplaySystem : MonoBehaviour
     }
 
     private void loadData(){
+        //Temporal Debug. Delete later
+        Debug.Log("loadData method called");
+        DataLogger.Instance.LogString("loadData was called");
         // Clean objects to load list
         objectsLoad.Clear();
         objectsLoadTemp.Clear();
@@ -446,6 +472,8 @@ public class ReplaySystem : MonoBehaviour
         // Get selected log files
         // string[] inputfiles = LogFileManager.logManager.SelectedLogFiles();  
 
+        //Temporal Debug. Delete later
+        Debug.Log("The data path is " + dataPath);
         // Get all log files in ReplayData folder
         string[] files = Directory.GetFiles(dataPath,"ReplayData*.txt");
 
@@ -459,6 +487,12 @@ public class ReplaySystem : MonoBehaviour
             {
                 objectsToRecord[i].gameobj.SetActive(false);
             }
+        }
+
+        if (this.includeSpatialData)
+        {
+            DataLogger.Instance.LogString("inside if for mesh deletion in loadData");
+            SpatialMeshManager.Instance.DeleteMeshes();
         }
 
         int filesCount = Mathf.Clamp(files.Length,1,10);
@@ -644,6 +678,21 @@ public class ReplaySystem : MonoBehaviour
                 }
             }
 
+            // If the checkBox ticked, we will try to extract the SpatialData as well
+            if (this.includeSpatialData)
+            {
+                DataLogger.Instance.LogString("inside if for mesh receration in loadData");
+                // The dateTime of the ReplayData file, which will be used to find the respective SpatialData file
+                var dateTime = GetDateTimeFromFile(file);
+                DataLogger.Instance.LogString($"Obtained DataTime after parsing fileName is {dateTime}");
+                
+                if (dateTime != null)
+                {
+                    DataLogger.Instance.LogString($"Within the if that dataTime is not null");
+                    SpatialMeshManager.Instance.CreateMeshesFromFile(dataPath, dateTime);
+                }
+            }
+
             fileCounter++;
 
             load_positions.Clear();
@@ -705,7 +754,7 @@ public class ReplaySystem : MonoBehaviour
         return new Vector3(float.Parse(x),float.Parse(y),float.Parse(z));
     }
 
-    string GetCurrentDateTime()
+    public string GetCurrentDateTime()
     {
         DateTime dt = DateTime.Now;
 
@@ -715,12 +764,34 @@ public class ReplaySystem : MonoBehaviour
         return currenttime;
     }
 
-    private void OnDestroy() 
+    string GetDateTimeFromFile(string fileName)
     {
-        if(positions.Count != 0)
+        // The pattern captures the date-time string
+        string pattern = @"(\d{4}-\d{1,2}-\d{1,2}T\d{1,2}-\d{1,2}-\d{1,2})";
+        
+        // Create a new Regex object
+        Regex regex = new Regex(pattern);
+
+        // Perform the match
+        Match match = regex.Match(fileName);
+
+        // If a match is found, return the captured group.
+        if (match.Success)
+        {
+            // The captured group is at index 1.
+            return match.Groups[1].Value;
+        }
+
+        // Return null if no date-time string is found.
+        return null;
+    }
+
+    private void OnDestroy()
+    {
+        if (positions.Count != 0)
         {
             saveData();
-        }    
+        }
     }
 
     private void OnApplicationQuit()

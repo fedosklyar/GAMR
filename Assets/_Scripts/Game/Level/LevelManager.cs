@@ -39,7 +39,7 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -49,16 +49,17 @@ public class LevelManager : MonoBehaviour
 
         objective1.SetActive(false);
         objective2.SetActive(false);
-        if(enemy1Objective != 0)
+        if (enemy1Objective != 0)
         {
             objective1.SetActive(true);
-            text1.text = "0 of " +enemy1Objective.ToString();
+            text1.text = "0 of " + enemy1Objective.ToString();
         }
-        if(enemy2Objective != 0)
+        if (enemy2Objective != 0)
         {
             objective2.SetActive(true);
-            text2.text = "0 of " +enemy2Objective.ToString();
+            text2.text = "0 of " + enemy2Objective.ToString();
         }
+
     }
 
     // Update is called once per frame

@@ -13,6 +13,7 @@ public class SelectLevel : MonoBehaviour, IMixedRealityTouchHandler
 
     public void LoadLevel()
     {
+        DataLogger.Instance.LogString($"The levelIndex value is {levelIndex}");
         SceneManager.LoadScene(levelIndex);
     }
 

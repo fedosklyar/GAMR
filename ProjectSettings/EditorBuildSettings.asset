@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/ScanningScene.unity
+    guid: b846075860e516e4ba3b089f1e3faa02
+  - enabled: 1
     path: Assets/Scenes/LevelSelector.unity
     guid: c042bd68de16cfb4b9c6623b64814d52
   - enabled: 1
@@ -27,5 +30,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Level3-Game.unity
     guid: a6b3e1e3c58d0ec4e807fc7c7eb33c22
   m_configObjects:
+    Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: e87a3673f0fade249b4f20914a42a5d7, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 73be79e9fa1481d4281109c5cc93938c, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 12ca49d447cfeee41bfb22d84ea2e191, type: 2}
