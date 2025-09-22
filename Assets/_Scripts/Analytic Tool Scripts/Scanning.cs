@@ -234,7 +234,7 @@ public class Scanning : MonoBehaviour, IMixedRealitySpatialAwarenessObservationH
             DataLogger.Instance.LogString($"Updates: {_updates}, Dictionary Size: {meshObserver.Meshes.Count}, Time: {DateTime.UtcNow.TimeOfDay}");
         // }
 
-        _debugText.text += $"Dictionary Size: {meshObserver.Meshes.Count}\n";
+        // _debugText.text += $"Dictionary Size: {meshObserver.Meshes.Count}\n";
 
         // Should comment for the next build
         if (_updateCountText != null)

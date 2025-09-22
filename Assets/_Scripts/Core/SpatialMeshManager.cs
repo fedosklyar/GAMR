@@ -14,6 +14,8 @@ public class SpatialMeshManager : MonoBehaviour
 
     public Material occlusionMaterial;
 
+    // public Shader meshShader;
+
     [Header("Configuration")]
     public bool hasDedicatedScanningScene = true;
     public string scanningSceneName;
@@ -63,7 +65,8 @@ public class SpatialMeshManager : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("OnEnable called");
+        Debug.Log("OnEnable on Spatial Manager is called");
+        DataLogger.Instance.LogString("OnEnable on Spatial Manager is called");
 
         SceneManager.sceneLoaded += MeshesRecreation;
     }
@@ -75,12 +78,19 @@ public class SpatialMeshManager : MonoBehaviour
 
     private void MeshesRecreation(Scene arg0, LoadSceneMode arg1)
     {
+        DataLogger.Instance.LogString("The Meshes Recreation is called");
         if (hasDedicatedScanningScene && IsGameScene())
         {
-            RecreateMeshes();
-            DataLogger.Instance.LogMeshData(persistentMeshes);
-            SuspendAllObservers();
+            // Observer suspension
             DataLogger.Instance.LogObserversState();
+            CoreServices.SpatialAwarenessSystem.SuspendAllMeshObservers();
+            DataLogger.Instance.LogObserversState();
+
+            // Mesh recreation
+            DataLogger.Instance.LogString("Within if on Meshes Recreation");
+            RecreateMeshes(new Color());
+            DataLogger.Instance.LogMeshData(persistentMeshes);
+            DataLogger.Instance.LogString("The Observer State after Suspension");
         }
     }
 
@@ -89,19 +99,19 @@ public class SpatialMeshManager : MonoBehaviour
 
     // }
 
-    private void SuspendAllObservers()
-    {
-        var spAwarenessSystem = (MixedRealitySpatialAwarenessSystem)CoreServices.SpatialAwarenessSystem;
-        var meshObservers = spAwarenessSystem.GetDataProviders<IMixedRealitySpatialAwarenessMeshObserver>();
+    // private void SuspendAllObservers()
+    // {
+    //     var spAwarenessSystem = (MixedRealitySpatialAwarenessSystem)CoreServices.SpatialAwarenessSystem;
+    //     var meshObservers = spAwarenessSystem.GetDataProviders<IMixedRealitySpatialAwarenessMeshObserver>();
 
-        foreach (var observer in meshObservers)
-        {
-            if (observer is BaseSpatialObserver baseObs && baseObs.IsRunning)
-            {
-                observer.Suspend();
-            }
-        }
-    }
+    //     foreach (var observer in meshObservers)
+    //     {
+    //         if (observer is BaseSpatialObserver baseObs && baseObs.IsRunning)
+    //         {
+    //             observer.Suspend();
+    //         }
+    //     }
+    // }
 
     private bool IsGameScene()
     {
@@ -135,15 +145,39 @@ public class SpatialMeshManager : MonoBehaviour
         DataLogger.Instance.LogString($"The serialized meshes list is {persistentMeshes.Count}");
     }
 
-    public void RecreateMeshes()
+    public void RecreateMeshes(Color color, Transform parent = null)
     {
-        // var meshObserver = (BaseSpatialMeshObserver)CoreServices.SpatialAwarenessSystem.GetActiveObserver();
+        // If no parent is provided, default to this GameObject's transform.
+        // 
+        DataLogger.Instance.LogString("RecreateMeshes is called");
+        Transform finalParent;
+        Material mat;
+
+
+        if (parent != null)
+        {
+            finalParent = parent;
+            mat = new Material(visibleMaterial);
+            mat.SetColor("_BaseColor", Color.black);
+            mat.SetColor("_WireColor", color);
+            // mat.
+        }
+        else
+        {
+            finalParent = this.transform;
+            mat = visibleMaterial;
+        }
+
+        DataLogger.Instance.LogString($"The parent name for the mesh recreation is {finalParent.gameObject.name}");
+        DataLogger.Instance.LogString($"The color values are: {color}");
+        DataLogger.Instance.LogString($"The material Properties: The BaseColor is {mat.GetColor("_BaseColor")} and the WireColor is {mat.GetColor("_WireColor")}");
+        
         foreach (var serializedMesh in persistentMeshes)
         {
             // Will make the manager the parent object for the creted meshes
 
             GameObject meshObj = new GameObject($"SpatialMesh_{serializedMesh.meshId}");
-            meshObj.transform.SetParent(this.transform);
+            meshObj.transform.SetParent(finalParent);
 
             var mesh = new Mesh();
             mesh.vertices = serializedMesh.vertices;
@@ -160,7 +194,7 @@ public class SpatialMeshManager : MonoBehaviour
             meshCollider.sharedMesh = mesh;
             meshCollider.convex = false;
 
-            meshRenderer.material = visibleMaterial;
+            meshRenderer.material = mat;
             if (CoreServices.SpatialAwarenessSystem.GetActiveObserver() != null)
                 meshObj.layer = CoreServices.SpatialAwarenessSystem.GetActiveObserver().MeshPhysicsLayer;
             else
@@ -237,30 +271,13 @@ public class SpatialMeshManager : MonoBehaviour
         DataLogger.Instance.LogString($"The length of the list after clearing is {persistentMeshes.Count}");
     }
 
-    public void CreateMeshesFromFile(string path, string dateTime)
+    public void CreateMeshesFromFile(string path, string dateTime, Transform parent, Color color)
     {
         DataLogger.Instance.LogString($"dateTime in the CreateMeshesFromFile is {dateTime} and the path is {path}");
         var filePath = Path.Combine(path, "SpatialData" + dateTime + ".txt");
 
         DataLogger.Instance.LogString($"The Filepath is {filePath}");
-        // try
-        // {
-        //     reader = new StreamReader(filePath);
-        //     DataLogger.Instance.LogString("The file with spatial data located sucessfully");
-        // }
-        // catch (Exception e)
-        // {
-        //     DataLogger.Instance.LogString("The file with spatial data was not located");
-        // }
-
-        // string fileString = reader.ReadToEnd();
-        // string[] lines = fileString.Split('\n');
-
-        // foreach (string line in lines)
-        // {
-
-        // }
-
+        
         // Will log the mesh data for the first mesh for debug purposes
         int counterForLogger = 0;
 
@@ -356,7 +373,7 @@ public class SpatialMeshManager : MonoBehaviour
         }
 
         // After list population from the file, the meshes will be created by already written method 
-        RecreateMeshes();
+        RecreateMeshes(color, parent);
     }
     
 }

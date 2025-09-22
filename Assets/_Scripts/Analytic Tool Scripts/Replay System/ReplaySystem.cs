@@ -31,6 +31,7 @@ public class ReplaySystem : MonoBehaviour
 
     List<Position> positions = new List<Position>();
 
+    public GameObject replayDataParent;
     // Player
     public GameObject PlayerTrackerParent;
     public GameObject PlayerPrefab;
@@ -81,7 +82,7 @@ public class ReplaySystem : MonoBehaviour
     private float timer;
     
     int randNum;
-    
+
     void Awake()
     {
         // Testing
@@ -461,7 +462,8 @@ public class ReplaySystem : MonoBehaviour
         System.IO.File.WriteAllText(dataPath + "/HeatmapData{currentdatetime}.csv".Replace("{currentdatetime}", time), title + postxt);
     }
 
-    private void loadData(){
+    private void loadData()
+    {
         //Temporal Debug. Delete later
         Debug.Log("loadData method called");
         DataLogger.Instance.LogString("loadData was called");
@@ -469,22 +471,32 @@ public class ReplaySystem : MonoBehaviour
         objectsLoad.Clear();
         objectsLoadTemp.Clear();
 
+
+        if (replayDataParent == null)
+        {
+            replayDataParent = new GameObject("ReplayData");
+            DataLogger.Instance.LogString($"Within if that states that replayDataParent reference is null");
+        }
+        DataLogger.Instance.LogString($"The name of the located Replay Data Parent is {replayDataParent.name}");
+
         // Get selected log files
         // string[] inputfiles = LogFileManager.logManager.SelectedLogFiles();  
 
         //Temporal Debug. Delete later
         Debug.Log("The data path is " + dataPath);
         // Get all log files in ReplayData folder
-        string[] files = Directory.GetFiles(dataPath,"ReplayData*.txt");
+        string[] files = Directory.GetFiles(dataPath, "ReplayData*.txt");
 
         // Ignore hidden lines in log file
         bool endObject = false;
 
         // Deactivating objects to record and place the recorded ones instead
-        if(objectsToRecord.Count != 0)
+        if (objectsToRecord.Count != 0)
         {
-            for(int i = 0; i < objectsToRecord.Count; i++)
+            DataLogger.Instance.LogString("Within the if for deactivation of objects");
+            for (int i = 0; i < objectsToRecord.Count; i++)
             {
+                DataLogger.Instance.LogString($"The object on the iteration ={i}= is {objectsToRecord[i].gameobj.name}");
                 objectsToRecord[i].gameobj.SetActive(false);
             }
         }
@@ -495,39 +507,47 @@ public class ReplaySystem : MonoBehaviour
             SpatialMeshManager.Instance.DeleteMeshes();
         }
 
-        int filesCount = Mathf.Clamp(files.Length,1,10);
+        int filesCount = Mathf.Clamp(files.Length, 1, 10);
         List<float> hues = lr.HueCalculator(filesCount, lr.huevalues);
         int fileCounter = 0;
 
-        foreach(string file in files){
-            int i=1;
+        foreach (string file in files)
+        {
+            int i = 1;
             StreamReader stream = new StreamReader(file);
             string lineReader = stream.ReadToEnd();
             string[] lines = lineReader.Split('\n');
 
-            int io=1;
+            int io = 1;
             ObjectsPositions obj = new ObjectsPositions();
-            
-            foreach(string line in lines)
+
+
+            // Create separete parent object for each recreated session
+            var dateTime = GetDateTimeFromFile(file);
+            var sessionParent = new GameObject("ReplayData" + dateTime);
+            DataLogger.Instance.LogString($"The seesionParent name is {sessionParent.name}");
+            sessionParent.transform.SetParent(replayDataParent.transform);
+
+            foreach (string line in lines)
             {
-                if(line != "")
+                if (line != "")
                 {
                     // Start by removing the \r at end of the line
-                    string Trimmedline = line.TrimEnd(new char[] {'\r'});
+                    string Trimmedline = line.TrimEnd(new char[] { '\r' });
 
                     // Also remove the \t at start of the line
-                    Trimmedline = line.TrimStart(new char[] {'\t'});
+                    Trimmedline = line.TrimStart(new char[] { '\t' });
 
                     string[] tokens = Trimmedline.Split('~');
 
-                    if(tokens[0] == "OBJ_START")
+                    if (tokens[0] == "OBJ_START")
                     {
                         currentObjectName = tokens[1];
 
                         // Game Object's data
                         io = 1;
-                        
-                        if(tokens.Length == 3)
+
+                        if (tokens.Length == 3)
                         {
                             obj = new ObjectsPositions();
                             obj.prefabName = tokens[2];
@@ -535,28 +555,29 @@ public class ReplaySystem : MonoBehaviour
 
                         endObject = false;
                     }
-                    else if(tokens[0] != "OBJ_END" && !endObject)
+                    else if (tokens[0] != "OBJ_END" && !endObject)
                     {
                         string tmpvalue = tokens[1].Replace("(", "").Replace(")", "");
 
                         string[] tmpvalues = tmpvalue.Split(',');
 
-                        if(i <= lineReader.Length && tmpvalues.Length > 0){
-                            if(currentObjectName.Contains("Player"))
+                        if (i <= lineReader.Length && tmpvalues.Length > 0)
+                        {
+                            if (currentObjectName.Contains("Player"))
                             {
-                                AddPlayerData(tmpvalues,i);
-                            }   
-                            else if(currentObjectName.Contains("Camera"))
-                            {
-                                AddCameraData(tmpvalues,i);
+                                AddPlayerData(tmpvalues, i);
                             }
-                            else if(obj.prefabName != null)
+                            else if (currentObjectName.Contains("Camera"))
                             {
-                                if(io%2 == 0)
+                                AddCameraData(tmpvalues, i);
+                            }
+                            else if (obj.prefabName != null)
+                            {
+                                if (io % 2 == 0)
                                 {
                                     objectPosition = AddObjectData(tmpvalues);
                                 }
-                                else if(io%2 != 0)
+                                else if (io % 2 != 0)
                                 {
                                     objectRotation = AddObjectData(tmpvalues);
                                     Position newobject = new Position();
@@ -567,13 +588,13 @@ public class ReplaySystem : MonoBehaviour
                                     obj.positions.Add(newobject);
                                 }
                             }
-                                
+
                         }
                     }
-                    else if(tokens[0] == "OBJ_END")
+                    else if (tokens[0] == "OBJ_END")
                     {
                         // Checking if game object is not null
-                        if(obj.prefabName != null)
+                        if (obj.prefabName != null)
                         {
                             objectsLoadTemp.Add(obj);
                         }
@@ -582,7 +603,7 @@ public class ReplaySystem : MonoBehaviour
                         endObject = true;
                     }
 
-                    i++; 
+                    i++;
                     io++;
                 }
             }
@@ -593,24 +614,28 @@ public class ReplaySystem : MonoBehaviour
             DefaultPosition = load_positions[0];
             DefaultRotation = load_rotations[0];
 
-            if(GameObject.FindGameObjectsWithTag("PlayerPrefab").Length < files.Length){
+            DataLogger.Instance.LogString("The count of the object with the PlayerPrefab tag is" + GameObject.FindGameObjectsWithTag("PlayerPrefab").Length);
+            DataLogger.Instance.LogString($"The count of the files is {files.Length}");
+            if (GameObject.FindGameObjectsWithTag("PlayerPrefab").Length < files.Length)
+            {
                 // Creating a player prefab for each log file
                 PlayerPrefab = Instantiate(PlayerPrefab, DefaultPosition, DefaultRotation);
 
                 // Setting player prefab's name
-                PlayerPrefab.transform.name = "Player"+fileCounter;
+                PlayerPrefab.transform.name = "Player" + fileCounter;
 
                 // Setting the player gameobject parent
-                PlayerPrefab.transform.SetParent(PlayerTrackerParent.transform);
+                // PlayerPrefab.transform.SetParent(PlayerTrackerParent.transform);
+                PlayerPrefab.transform.SetParent(sessionParent.transform);
 
                 // Adding Line Renderer component
-                if(PlayerPrefab.GetComponent<LineRenderer>() == null)
+                if (PlayerPrefab.GetComponent<LineRenderer>() == null)
                     PlayerPrefab.AddComponent<LineRenderer>();
 
                 // Adding Position Tracker component if does not exist
-                if(PlayerPrefab.GetComponent<PositionTracker>() == null)
+                if (PlayerPrefab.GetComponent<PositionTracker>() == null)
                     PlayerPrefab.AddComponent<PositionTracker>();
-                
+
                 // Removing previous positions from the list
                 PlayerPrefab.GetComponent<PositionTracker>().ResetPositions();
                 // Adding new values to the list for each player prefab
@@ -619,27 +644,29 @@ public class ReplaySystem : MonoBehaviour
 
                 PlayerPrefabs.Add(PlayerPrefab);
             }
-            
+
             lr.LineRendererComponentFn(hues[fileCounter], PlayerPrefab);
 
             DefaultCameraPosition = load_fovpositions[0];
             DefaultCameraPoints = load_fovpoints[0];
 
-            if(GameObject.FindGameObjectsWithTag("FOVPyramid").Length < files.Length){
+            if (GameObject.FindGameObjectsWithTag("FOVPyramid").Length < files.Length)
+            {
                 // Creating a camera prefab for each log file
                 GameObject FovPrefab = Instantiate(CameraPrefab, DefaultCameraPosition, Quaternion.identity);
                 FovPrefab.transform.GetChild(0).localPosition = DefaultCameraPosition;
 
                 // Setting camera prefab's name
-                FovPrefab.transform.name = "Camera"+fileCounter;
+                FovPrefab.transform.name = "Camera" + fileCounter;
 
                 // Setting the camra gameobject parent
-                FovPrefab.transform.SetParent(CameraTrackerParent.transform);
+                // FovPrefab.transform.SetParent(CameraTrackerParent.transform);
+                FovPrefab.transform.SetParent(sessionParent.transform);
 
-                if(FovPrefab.GetComponent<FOVPyramid>() == null)
+                if (FovPrefab.GetComponent<FOVPyramid>() == null)
                     FovPrefab.AddComponent<FOVPyramid>();
-                
-                if(FovPrefab.GetComponent<CameraPositionTracker>() == null)
+
+                if (FovPrefab.GetComponent<CameraPositionTracker>() == null)
                     FovPrefab.AddComponent<CameraPositionTracker>();
 
                 // Removing previous positions from the list
@@ -656,17 +683,18 @@ public class ReplaySystem : MonoBehaviour
 
             // Setting parent for each group of recorded GOs
             GameObject GOgroupparent = new GameObject();
-            GOgroupparent.transform.name = "GOGroup"+fileCounter;
-            GOgroupparent.transform.SetParent(GOTrackerParent.transform);
+            GOgroupparent.transform.name = "GOGroup" + fileCounter;
+            // GOgroupparent.transform.SetParent(GOTrackerParent.transform);
+            GOgroupparent.transform.SetParent(sessionParent.transform);
 
             // Creating recorded game objects in their intial position and rotation
-            if(objectsLoadTemp.Count != 0)
+            if (objectsLoadTemp.Count != 0)
             {
-                foreach(ObjectsPositions objs in objectsLoadTemp)
+                foreach (ObjectsPositions objs in objectsLoadTemp)
                 {
-                    foreach(GameObject prfb in prefabsToLoad)
+                    foreach (GameObject prfb in prefabsToLoad)
                     {
-                        if(objs.prefabName.Contains(prfb.transform.name))
+                        if (objs.prefabName.Contains(prfb.transform.name))
                         {
                             GameObject gobject = Instantiate(prfb, objs.positions[0].position, objs.positions[0].rotation);
                             gobject.transform.name = objs.positions[0].name;
@@ -683,13 +711,12 @@ public class ReplaySystem : MonoBehaviour
             {
                 DataLogger.Instance.LogString("inside if for mesh receration in loadData");
                 // The dateTime of the ReplayData file, which will be used to find the respective SpatialData file
-                var dateTime = GetDateTimeFromFile(file);
                 DataLogger.Instance.LogString($"Obtained DataTime after parsing fileName is {dateTime}");
-                
+
                 if (dateTime != null)
                 {
                     DataLogger.Instance.LogString($"Within the if that dataTime is not null");
-                    SpatialMeshManager.Instance.CreateMeshesFromFile(dataPath, dateTime);
+                    SpatialMeshManager.Instance.CreateMeshesFromFile(dataPath, dateTime, sessionParent.transform, Color.HSVToRGB(hues[fileCounter], 1, 1));
                 }
             }
 
@@ -700,6 +727,20 @@ public class ReplaySystem : MonoBehaviour
             load_fovpoints.Clear();
             load_fovpositions.Clear();
             objectsLoadTemp.Clear();
+        }
+
+        DataLogger.Instance.LogString("Iterating through the children objects within the replayData");
+
+        foreach (Transform child in replayDataParent.transform)
+        {
+            DataLogger.Instance.LogString($"The name of the child object is {child.gameObject.name}");
+            if (child.gameObject.name.Contains("ReplayData"))
+            {
+                foreach (Transform replayChild in child)
+                {
+                    DataLogger.Instance.LogString($"The name of the replay child object is {replayChild.gameObject.name}");
+                }
+            }
         }
     }
 

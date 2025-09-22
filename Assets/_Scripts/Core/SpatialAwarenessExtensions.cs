@@ -12,4 +12,27 @@ public static class SpatialAwarenessExtensions
         var observers = castedSpatialAwareness.GetDataProviders<IMixedRealitySpatialAwarenessMeshObserver>();
         return observers.FirstOrDefault(o => o is BaseSpatialObserver baseObs && baseObs.IsRunning);
     }
+
+    public static void SuspendAllMeshObservers(this IMixedRealitySpatialAwarenessSystem spatialAwarenessSystem)
+    {
+        if (spatialAwarenessSystem == null)
+        {
+            Debug.LogError("Spatial awareness system is null.");
+            return;
+        }
+
+        var castedSpatialAwareness = (MixedRealitySpatialAwarenessSystem)spatialAwarenessSystem;
+
+        var meshObservers = castedSpatialAwareness.GetDataProviders<IMixedRealitySpatialAwarenessMeshObserver>();
+        
+        foreach (var observer in meshObservers)
+        {
+            if (observer is BaseSpatialObserver baseObs && baseObs.IsRunning)
+            {
+                observer.Suspend();
+                Debug.Log($"Suspended observer: {observer.Name}");
+            }
+        }
+    }
+
 }
