@@ -25,6 +25,7 @@
 
 # Visual Studio cache directory
 .vs/
+.vscode/
 
 # Gradle cache directory
 .gradle/
@@ -73,3 +74,5 @@ crashlytics-build.properties
 /Assets/LogData
 /Assets/ReplayData
 /Assets/Spatial Maps
+Assets/_Materials/Analytic Tool Materials/_Menu/1029949-200.png
+Assets/_Materials/Analytic Tool Materials/_Menu/1029949-200.png.meta
