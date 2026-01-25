@@ -281,6 +281,10 @@ public class SpatialMeshManager : MonoBehaviour
         // Will log the mesh data for the first mesh for debug purposes
         int counterForLogger = 0;
 
+        //Clear meshes, which were recreated beforehand
+        //It should save the problem with coloring all meshes in the color, generated for the last session  
+        persistentMeshes.Clear();
+
         try
         {
             using (StreamReader reader = new StreamReader(filePath))
