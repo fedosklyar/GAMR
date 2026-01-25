@@ -25,6 +25,7 @@ public class ReplaySystem : MonoBehaviour
 
     public List<GameObject> prefabsToLoad;
     public List<Objects> objectsToRecord;
+    public List<GameObject> objectsToTranslate;
     List<ObjectsPositions> objspositions = new List<ObjectsPositions>();
 
     public bool includeSpatialData;
@@ -730,6 +731,13 @@ public class ReplaySystem : MonoBehaviour
         }
 
         DataLogger.Instance.LogString("Iterating through the children objects within the replayData");
+
+        //parenting static Objects to ReplayData in order to translate them as well
+        //One instance of the set of such objects should be enough
+        foreach (var Obj in this.objectsToTranslate)
+        {
+            Obj.transform.SetParent(replayDataParent.transform);
+        }
 
         foreach (Transform child in replayDataParent.transform)
         {

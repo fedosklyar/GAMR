@@ -10366,6 +10366,14 @@ MonoBehaviour:
     gameobj: {fileID: 1592184563}
   - prefabName: egyptian_B
     gameobj: {fileID: 919132149367683485}
+  objectsToTranslate:
+  - {fileID: 6015028679104202667}
+  - {fileID: 570786613}
+  - {fileID: 982732965}
+  - {fileID: 981644005}
+  - {fileID: 593983726}
+  - {fileID: 1460334257}
+  - {fileID: 840875777}
   includeSpatialData: 1
   replayDataParent: {fileID: 795911522}
   PlayerTrackerParent: {fileID: 1672152329}
