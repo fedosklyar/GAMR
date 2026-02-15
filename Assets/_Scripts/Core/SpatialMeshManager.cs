@@ -222,39 +222,62 @@ public class SpatialMeshManager : MonoBehaviour
             DataLogger.Instance.LogString("The file for spatial data storing was not created");
         }
 
+        DataLogger.Instance.LogString("The Meshes Count in the list (and on the scene, respectively): " + persistentMeshes.Count);
+
+        //For debugging purposes
+        int successCount = 0;
+        int failCount = 0;
+
         foreach (var mesh in persistentMeshes)
         {
-
-            writer.WriteLine($"MESH_START:{mesh.meshId}");
-            writer.WriteLine($"POSITION:{mesh.worldPosition.x},{mesh.worldPosition.y},{mesh.worldPosition.z}");
-            writer.WriteLine($"ROTATION:{mesh.worldRotation.x},{mesh.worldRotation.y},{mesh.worldRotation.z},{mesh.worldRotation.w}");
-            writer.WriteLine($"SCALE:{mesh.worldScale.x},{mesh.worldScale.y},{mesh.worldScale.z}");
-
-            // Vertices
-            writer.WriteLine($"VERTICES:{mesh.vertices.Length}");
-            foreach (var vertex in mesh.vertices)
+            try
             {
-                writer.WriteLine($"{vertex.x},{vertex.y},{vertex.z}");
+                SerializeSingleMesh(writer, mesh);
+                ++successCount;
+                DataLogger.Instance.LogString($"Saved mesh {mesh.meshId}");
             }
-
-            // Triangles (indices into vertex array)
-            writer.WriteLine($"TRIANGLES:{mesh.triangles.Length}");
-            for (int i = 0; i < mesh.triangles.Length; i += 3)
+            catch (Exception e)
             {
-                writer.WriteLine($"{mesh.triangles[i]},{mesh.triangles[i + 1]},{mesh.triangles[i + 2]}");
+                ++failCount;
+                DataLogger.Instance.LogString($"Failed Mesh {mesh.meshId}: {e.Message}");
+                DataLogger.Instance.LogString($"Stack: {e.StackTrace}");
             }
-
-            // Normals
-            writer.WriteLine($"NORMALS:{mesh.normals.Length}");
-            foreach (var normal in mesh.normals)
-            {
-                writer.WriteLine($"{normal.x},{normal.y},{normal.z}");
-            }
-
-            writer.WriteLine("MESH_END");
         }
 
+        writer.Flush();
         writer.Close();
+        DataLogger.Instance.LogString("File closed.");
+    }
+
+    private void SerializeSingleMesh(StreamWriter writer, SerializedMesh mesh)
+    {
+        writer.WriteLine($"MESH_START:{mesh.meshId}");
+                writer.WriteLine($"POSITION:{mesh.worldPosition.x},{mesh.worldPosition.y},{mesh.worldPosition.z}");
+                writer.WriteLine($"ROTATION:{mesh.worldRotation.x},{mesh.worldRotation.y},{mesh.worldRotation.z},{mesh.worldRotation.w}");
+                writer.WriteLine($"SCALE:{mesh.worldScale.x},{mesh.worldScale.y},{mesh.worldScale.z}");
+
+                // Vertices
+                writer.WriteLine($"VERTICES:{mesh.vertices.Length}");
+                foreach (var vertex in mesh.vertices)
+                {
+                    writer.WriteLine($"{vertex.x},{vertex.y},{vertex.z}");
+                }
+
+                // Triangles (indices into vertex array)
+                writer.WriteLine($"TRIANGLES:{mesh.triangles.Length}");
+                for (int i = 0; i < mesh.triangles.Length; i += 3)
+                {
+                    writer.WriteLine($"{mesh.triangles[i]},{mesh.triangles[i + 1]},{mesh.triangles[i + 2]}");
+                }
+
+                // Normals
+                writer.WriteLine($"NORMALS:{mesh.normals.Length}");
+                foreach (var normal in mesh.normals)
+                {
+                    writer.WriteLine($"{normal.x},{normal.y},{normal.z}");
+                }
+
+                writer.WriteLine("MESH_END");
     }
 
     public void DeleteMeshes()
